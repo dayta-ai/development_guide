@@ -7,6 +7,7 @@
   - [Introduction](#introduction)
   - [Guidelines](#guidelines)
     - [Error response](#error-response)
+    - [Success Reponse](#success-reponse)
 
 ## Introduction
 
@@ -57,5 +58,54 @@ return ErrorResponse {
     Status: http.StatusNotFound,
     Code: 010, // Route number 0, verb GET(1), Code 0
     Message: fmt.Sprintf("User (%v) not found", id)
+}
+```
+`Message`: message field represents the specific error message associated with the error.
+- Example: `User (abcd-efghijklm-nopqrs) not found`
+
+
+### Success Reponse
+
+Success response is defined by the type below:
+```go
+
+type SuccessResponse struct {
+	Status int         `json:"status"` // HTTP Status
+	Code   int         `json:"code"`   // Internal debugging status
+	Data   interface{} `json:"data"`   // Data payload
+}
+```
+
+`Status`: status field represents the true HTTP status code returned by the server, in most cases 200
+for successful requests. For other responses that require specific behaviors, for example redirect,
+the response will not be wrapped inside the response struct but will use the http response directly.
+- Example: Response OK - 200
+
+`Code`: code field represents the code required for debugging purposes. It follows the same convention as
+the error response above.
+
+`Data`: data field represents the data that will be successfully returned by the API. If the response payload
+shall contain nested data, it will provide upto maximum 1 level of nesting.
+- Example:
+```go
+type Workspace struct {
+    Name string
+    NestedAttrib *NestedAttrib
+}
+type User struct {
+    Name string
+    Workspace *Workspace
+}
+
+return SuccessResponse {
+    Status: http.StatusOK,
+    Code: 0,
+    Data: User{ // returned value struct
+        Name: "EXAMPLE_USER",
+        Workspace: { // 1st level of nesting
+            Name: "EXAMPLE_WORKSPACE",
+            NestedAttrib: nil, // 2nd level of nesting, nil
+        }
+    }
 }
 ```
