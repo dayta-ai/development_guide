@@ -1,6 +1,11 @@
 This repository holds the [Uber Go Style Guide](style.md), which documents
 patterns and conventions used in Go code at Uber.
 
+## Cyclops development guide
+
+1. [Response structure](response.md)
+   - How to structure responses from each microservices(cyclops conventions)
+
 ## Style Guide
 
 See [Uber Go Style Guide](style.md) for the style guide.
